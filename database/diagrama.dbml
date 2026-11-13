@@ -8,7 +8,7 @@ Table clientes {
 
 Table direcciones {
   direccion_id int [pk, increment]
-  cliente_id int [ref: > clientes.cliente_id]
+  cliente_id int
   calle varchar(150)
   ciudad varchar(100)
   codigo_postal varchar(10)
@@ -24,10 +24,10 @@ Table almacenes {
 
 Table envios {
   envio_id int [pk, increment]
-  remitente_id int [ref: > clientes.cliente_id]
-  destinatario_id int [ref: > clientes.cliente_id]
-  direccion_origen_id int [ref: > direcciones.direccion_id]
-  direccion_destino_id int [ref: > direcciones.direccion_id]
+  remitente_id int
+  destinatario_id int
+  direccion_origen_id int
+  direccion_destino_id int
   costo_total decimal(10,2)
   fecha datetime
   estado_global enum
@@ -35,8 +35,8 @@ Table envios {
 
 Table paquetes {
   paquete_id int [pk, increment]
-  envio_id int [ref: > envios.envio_id]
-  almacen_id int [ref: > almacenes.almacen_id]
+  envio_id int
+  almacen_id int
   peso decimal(8,2)
   dimensiones varchar(50)
   contenido varchar(255)
@@ -44,7 +44,7 @@ Table paquetes {
 
 Table historial_rastreo {
   rastreo_id int [pk, increment]
-  envio_id int [ref: > envios.envio_id]
+  envio_id int
   fecha datetime
   ubicacion_actual varchar(150)
   estado_evento enum
@@ -53,9 +53,19 @@ Table historial_rastreo {
 
 Table auditoria_envios {
   auditoria_id int [pk, increment]
-  envio_id int [ref: > envios.envio_id]
+  envio_id int
   costo_anterior decimal(10,2)
   costo_nuevo decimal(10,2)
   usuario varchar(100)
   fecha_modificacion datetime
 }
+
+Ref: direcciones.cliente_id > clientes.cliente_id
+Ref: envios.remitente_id > clientes.cliente_id
+Ref: envios.destinatario_id > clientes.cliente_id
+Ref: envios.direccion_origen_id > direcciones.direccion_id
+Ref: envios.direccion_destino_id > direcciones.direccion_id
+Ref: paquetes.envio_id > envios.envio_id
+Ref: paquetes.almacen_id > almacenes.almacen_id
+Ref: historial_rastreo.envio_id > envios.envio_id
+Ref: auditoria_envios.envio_id > envios.envio_id
