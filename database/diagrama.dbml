@@ -1,0 +1,61 @@
+Table clientes {
+  cliente_id int [pk, increment]
+  nombre varchar(100)
+  correo varchar(100) [unique]
+  estado enum
+  limite_credito decimal(10,2)
+}
+
+Table direcciones {
+  direccion_id int [pk, increment]
+  cliente_id int [ref: > clientes.cliente_id]
+  calle varchar(150)
+  ciudad varchar(100)
+  codigo_postal varchar(10)
+  tipo enum
+}
+
+Table almacenes {
+  almacen_id int [pk, increment]
+  nombre varchar(100)
+  ubicacion varchar(200)
+  capacidad_maxima int
+}
+
+Table envios {
+  envio_id int [pk, increment]
+  remitente_id int [ref: > clientes.cliente_id]
+  destinatario_id int [ref: > clientes.cliente_id]
+  direccion_origen_id int [ref: > direcciones.direccion_id]
+  direccion_destino_id int [ref: > direcciones.direccion_id]
+  costo_total decimal(10,2)
+  fecha datetime
+  estado_global enum
+}
+
+Table paquetes {
+  paquete_id int [pk, increment]
+  envio_id int [ref: > envios.envio_id]
+  almacen_id int [ref: > almacenes.almacen_id]
+  peso decimal(8,2)
+  dimensiones varchar(50)
+  contenido varchar(255)
+}
+
+Table historial_rastreo {
+  rastreo_id int [pk, increment]
+  envio_id int [ref: > envios.envio_id]
+  fecha datetime
+  ubicacion_actual varchar(150)
+  estado_evento enum
+  observaciones text
+}
+
+Table auditoria_envios {
+  auditoria_id int [pk, increment]
+  envio_id int [ref: > envios.envio_id]
+  costo_anterior decimal(10,2)
+  costo_nuevo decimal(10,2)
+  usuario varchar(100)
+  fecha_modificacion datetime
+}
